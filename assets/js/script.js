@@ -216,16 +216,43 @@ $(function () {
     document.getElementById('alert-banner').style.display = 'block';
   }, 10000);
 
-  // Drag & Drop
-  let dragSrc = null;
-  function addDragEvents(elem) {
-    elem.addEventListener('dragstart', e => { dragSrc = e.currentTarget; e.currentTarget.classList.add('dragging'); });
-    elem.addEventListener('dragend', e => { e.currentTarget.classList.remove('dragging'); });
-    elem.addEventListener('dragover', e => e.preventDefault());
-    elem.addEventListener('drop', e => {
-      e.preventDefault(); if (dragSrc !== e.currentTarget) { const temp = dragSrc.innerHTML; dragSrc.innerHTML = e.currentTarget.innerHTML; e.currentTarget.innerHTML = temp; }
-    });
-  }
+// At the top of script.js
+let dragSrc = null;
+
+// Replace the old addDragEvents with this:
+function addDragEvents(elem) {
+  // When drag starts, remember the source element
+  elem.addEventListener('dragstart', e => {
+    dragSrc = e.currentTarget;
+    e.currentTarget.classList.add('dragging');
+  });
+
+  // When drag ends, remove dragging style
+  elem.addEventListener('dragend', e => {
+    e.currentTarget.classList.remove('dragging');
+  });
+
+  // Allow dropping
+  elem.addEventListener('dragover', e => {
+    e.preventDefault();
+  });
+
+  // On drop, swap the two frame elements in the DOM
+  elem.addEventListener('drop', e => {
+    e.preventDefault();
+    const dropTarget = e.currentTarget;
+    if (!dragSrc || dropTarget === dragSrc) return;
+
+    const parent = dragSrc.parentNode;
+    const dragNext = dragSrc.nextSibling;
+    const dropNext = dropTarget.nextSibling;
+
+    // Swap positions
+    parent.insertBefore(dragSrc, dropNext);
+    parent.insertBefore(dropTarget, dragNext);
+  });
+}
+
 
   // Initialize default grid
   createGrid(9);
