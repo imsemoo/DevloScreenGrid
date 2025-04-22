@@ -242,15 +242,18 @@ $(function () {
   // --------------------------------------
   // 12. Share snapshot via html2canvas
   // --------------------------------------
-  $('#shareBtn').on('click', () => {
-    html2canvas(grid).then(canvas => {
-      const link = document.createElement('a');
-      link.download = 'devloscreengrid-snapshot.png';
-      link.href = canvas.toDataURL();
-      link.click();
-    });
-  });
 
+  $('#shareBtn').on('click', () => {
+    // now html2canvas is guaranteed to exist
+    html2canvas($('#grid')[0])
+      .then(canvas => {
+        const link = document.createElement('a');
+        link.download = 'snapshot.png';
+        link.href = canvas.toDataURL();
+        link.click();
+      })
+      .catch(err => console.error('html2canvas failed:', err));
+  });
   // --------------------------------------
   // 13. Simulate breaking news alert banner
   // --------------------------------------
@@ -305,6 +308,97 @@ $(function () {
     modal.querySelector(closeBtn)
       .addEventListener('click', () => toggleModal(id));
   });
+  // Open modal
+  document.getElementById('loginBtn').onclick = () => openAuth('login');
+  document.getElementById('signupBtn').onclick = () => openAuth('signup');
+  document.querySelector('.modal-close').onclick = closeAuth;
+  document.getElementById('authModal').onclick = e => {
+    if (e.target.id === 'authModal') closeAuth();
+  };
 
+  function openAuth(tab) {
+    document.getElementById('authModal').classList.add('active');
+    switchTab(tab);
+  }
+  function closeAuth() {
+    document.getElementById('authModal').classList.remove('active');
+  }
+  function switchTab(tab) {
+    document.querySelectorAll('.auth-tabs button').forEach(b => b.classList.toggle('active', b.dataset.tab === tab));
+    document.querySelectorAll('.auth-form').forEach(f => f.classList.toggle('active', f.id === tab + 'Form'));
+  }
+  document.querySelectorAll('.auth-tabs button')
+    .forEach(b => b.addEventListener('click', () => switchTab(b.dataset.tab)));
+
+  // ====== Video Recording via Offscreen Canvas ======
+  const recordBtn = document.getElementById('recordBtn');
+  let mediaRecorder, recordedChunks = [], drawInterval, canvasRec, ctx;
+
+  recordBtn.addEventListener('click', () => {
+    // If not recording yet → start
+    if (!mediaRecorder || mediaRecorder.state === 'inactive') {
+      // 1) Create a hidden canvas matching #grid size
+      const rect = grid.getBoundingClientRect();
+      canvasRec = document.createElement('canvas');
+      canvasRec.width = rect.width;
+      canvasRec.height = rect.height;
+      ctx = canvasRec.getContext('2d');
+
+      // 2) Capture its stream at 30fps
+      const stream = canvasRec.captureStream(30);
+
+      // 3) Set up MediaRecorder
+      recordedChunks = [];
+      mediaRecorder = new MediaRecorder(stream, { mimeType: 'video/webm; codecs=vp9' });
+      mediaRecorder.ondataavailable = e => {
+        if (e.data.size) recordedChunks.push(e.data);
+      };
+      mediaRecorder.onstop = () => {
+        clearInterval(drawInterval);       // stop drawing loop
+        // build blob & trigger download
+        const blob = new Blob(recordedChunks, { type: 'video/webm' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = `grid-${Date.now()}.webm`;
+        a.style.display = 'none';
+        document.body.appendChild(a);
+        a.click();
+        URL.revokeObjectURL(url);
+        document.body.removeChild(a);
+      };
+
+      mediaRecorder.start();
+      recordBtn.classList.add('recording');
+      recordBtn.innerHTML = '<i class="fas fa-stop"></i>';
+
+      // 4) Draw loop: every frame, copy each video into the canvas
+      drawInterval = setInterval(() => {
+        // clear previous frame
+        ctx.clearRect(0, 0, canvasRec.width, canvasRec.height);
+
+        // for each <video> in the grid...
+        grid.querySelectorAll('video').forEach(video => {
+          const vRect = video.getBoundingClientRect();
+          // compute its position relative to the grid:
+          const x = vRect.left - rect.left;
+          const y = vRect.top - rect.top;
+          // draw the current frame
+          try {
+            ctx.drawImage(video, x, y, vRect.width, vRect.height);
+          } catch (err) {
+            // sometimes drawImage() can throw if video not ready — ignore
+          }
+        });
+      }, 1000 / 30); // 30fps
+
+    }
+    // Otherwise → stop recording
+    else {
+      mediaRecorder.stop();
+      recordBtn.classList.remove('recording');
+      recordBtn.innerHTML = '<i class="fas fa-circle"></i>';
+    }
+  });
 
 });

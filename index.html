@@ -361,73 +361,180 @@
         .epg-list li:last-child {
             border-bottom: none;
         }
+
         /* Favorites Modal Overlay */
-.fav-modal-overlay {
-  position: fixed;
-  inset: 0;
-  background: rgba(0,0,0,0.6);
-  display: none;
-  align-items: center;
-  justify-content: center;
-  z-index: 1001;
-}
-.fav-modal-overlay.active {
-  display: flex;
-}
+        .fav-modal-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.6);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 1001;
+        }
 
-/* Favorites Modal Container */
-.fav-modal {
-  background: var(--color-background);
-  border-radius: 8px;
-  width: 90%;
-  max-width: 360px;
-  box-shadow: 0 8px 24px rgba(0,0,0,0.2);
-  display: flex;
-  flex-direction: column;
-  overflow: hidden;
-}
+        .fav-modal-overlay.active {
+            display: flex;
+        }
 
-/* Header */
-.fav-header {
-  background: var(--color-primary);
-  color: #fff;
-  padding: 12px 16px;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-}
-.fav-title {
-  margin: 0;
-  font-size: 1.1rem;
-  font-weight: 600;
-}
-.fav-close {
-  background: none;
-  border: none;
-  font-size: 1.5rem;
-  color: #fff;
-  cursor: pointer;
-}
+        /* Favorites Modal Container */
+        .fav-modal {
+            background: var(--color-background);
+            border-radius: 8px;
+            width: 90%;
+            max-width: 360px;
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
 
-/* Body */
-.fav-body {
-  padding: 16px;
-  max-height: 50vh;
-  overflow-y: auto;
+        /* Header */
+        .fav-header {
+            background: var(--color-primary);
+            color: #fff;
+            padding: 12px 16px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .fav-title {
+            margin: 0;
+            font-size: 1.1rem;
+            font-weight: 600;
+        }
+
+        .fav-close {
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            color: #fff;
+            cursor: pointer;
+        }
+
+        /* Body */
+        .fav-body {
+            padding: 16px;
+            max-height: 50vh;
+            overflow-y: auto;
+        }
+
+        .fav-list {
+            list-style: none;
+            margin: 0;
+            padding: 0;
+        }
+
+        .fav-list li {
+            padding: 8px 0;
+            border-bottom: 1px solid var(--color-border);
+            font-size: 0.95rem;
+            color: var(--color-text);
+        }
+
+        .fav-list li:last-child {
+            border-bottom: none;
+        }
+
+        /* Overlay */
+        .modal-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.6);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 1002;
+        }
+
+        .modal-overlay.active {
+            display: flex;
+        }
+
+        /* Modal box */
+        .auth-modal {
+            background: var(--color-background);
+            border-radius: 8px;
+            width: 90%;
+            max-width: 380px;
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* Header */
+        .modal-header {
+            background: var(--color-primary);
+            color: #fff;
+            padding: 12px 16px;
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .modal-close {
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            color: #fff;
+            cursor: pointer;
+        }
+
+        /* Tabs */
+        .auth-tabs {
+            display: flex;
+            border-bottom: 1px solid var(--color-border);
+        }
+
+        .auth-tabs button {
+            flex: 1;
+            padding: 10px;
+            background: none;
+            border: none;
+            cursor: pointer;
+        }
+
+        .auth-tabs .active {
+            border-bottom: 2px solid var(--color-secondary);
+            font-weight: 600;
+        }
+
+        /* Forms */
+        .auth-form {
+            display: none;
+            padding: 16px;
+        }
+
+        .auth-form.active {
+            display: block;
+        }
+
+        .auth-form input {
+            width: 100%;
+            margin-bottom: 12px;
+            padding: 8px;
+        }
+
+        .auth-form button {
+            width: 100%;
+            padding: 10px;
+            background: var(--color-secondary);
+            color: #fff;
+            border: none;
+            cursor: pointer;
+        }
+        #recordBtn {
+  color: var(--color-secondary);
+  font-size: 1.2rem;
+  transition: color .2s;
+  background: #fff;
+border: 1px solid   var(--color-secondary);
 }
-.fav-list {
-  list-style: none;
-  margin: 0;
-  padding: 0;
+#recordBtn.recording {
+  color: red;
 }
-.fav-list li {
-  padding: 8px 0;
-  border-bottom: 1px solid var(--color-border);
-  font-size: 0.95rem;
-  color: var(--color-text);
-}
-.fav-list li:last-child {
-  border-bottom: none;
+#recordBtn:hover {
+  color: var(--color-hover);
 }
 
     </style>
@@ -464,6 +571,16 @@
             <button id="shareBtn" aria-label="Share View">
                 <i class="fas fa-share-alt"></i>
             </button>
+            <button id="recordBtn" aria-label="Record"><i class="fas fa-circle"></i></button>
+
+            <!-- Icon buttons for auth -->
+            <button id="loginBtn" class="auth-btn" aria-label="Login">
+                <i class="fas fa-sign-in-alt"></i>
+            </button>
+            <button id="signupBtn" class="auth-btn" aria-label="Sign Up">
+                <i class="fas fa-user-plus"></i>
+            </button>
+
         </div>
     </header>
 
@@ -485,19 +602,19 @@
 
 
     <!-- Favorites Modal (updated) -->
-<div id="favModal" class="fav-modal-overlay" aria-hidden="true">
-    <div class="fav-modal">
-      <header class="fav-header">
-        <h2 class="fav-title">My Favorites</h2>
-        <button class="fav-close" aria-label="Close Favorites">&times;</button>
-      </header>
-      <div class="fav-body">
-        <ul id="favList" class="fav-list"></ul>
-        <!-- Optionally add a “Clear All” button here -->
-      </div>
+    <div id="favModal" class="fav-modal-overlay" aria-hidden="true">
+        <div class="fav-modal">
+            <header class="fav-header">
+                <h2 class="fav-title">My Favorites</h2>
+                <button class="fav-close" aria-label="Close Favorites">&times;</button>
+            </header>
+            <div class="fav-body">
+                <ul id="favList" class="fav-list"></ul>
+                <!-- Optionally add a “Clear All” button here -->
+            </div>
+        </div>
     </div>
-  </div>
-  
+
 
     <!-- Schedule Recording Modal -->
     <div id="scheduleModal" class="modal">
@@ -518,9 +635,41 @@
             </form>
         </div>
     </div>
+    <!-- Authentication Modal -->
+    <div id="authModal" class="modal-overlay" aria-hidden="true">
+        <div class="modal auth-modal">
+            <header class="modal-header">
+                <h2 class="modal-title">Welcome</h2>
+                <button class="modal-close" aria-label="Close">&times;</button>
+            </header>
+            <div class="modal-body">
+                <!-- Tab navigation -->
+                <nav class="auth-tabs">
+                    <button data-tab="login" class="active">Login</button>
+                    <button data-tab="signup">Sign Up</button>
+                </nav>
+                <!-- Forms -->
+                <form id="loginForm" class="auth-form active">
+                    <input type="email" placeholder="Email" required>
+                    <input type="password" placeholder="Password" required>
+                    <label><input type="checkbox"> Remember me</label>
+                    <button type="submit">Log In</button>
+                </form>
+                <form id="signupForm" class="auth-form">
+                    <input type="text" placeholder="Username" required>
+                    <input type="email" placeholder="Email" required>
+                    <input type="password" placeholder="Password" required>
+                    <button type="submit">Create Account</button>
+                </form>
+            </div>
+        </div>
+    </div>
 
     <script src="assets/js/jquery-3.7.1.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
+    <!-- load html2canvas first -->
+    <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
+    >
 
     <script src="assets/js/script.js"></script>
 
