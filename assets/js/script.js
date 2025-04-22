@@ -1,110 +1,67 @@
 $(function () {
-
+  // -----------------------
+  // 1. Channel definitions
+  // -----------------------
   const channels = [
-    {
-      id: 1,
-      name: 'Al Jazeera Arabic',
-      src: 'https://live-hls-web-aja.getaj.net/AJA/index.m3u8',
-      epg: [
-        '06:00 - صباح الجزيرة',
-        '12:00 - الأخبار',
-        '18:00 - الموجز المسائي'
-      ]
-    },
-    {
-      id: 2,
-      name: 'Al Jazeera English',
-      src: 'https://live-hls-web-aje.getaj.net/AJE/index.m3u8',
-      epg: [
-        '07:00 - AJ Morning News',
-        '13:00 - AJ Newsroom',
-        '19:00 - News Hour'
-      ]
-    },
-    {
-      id: 3,
-      name: 'Al Jazeera Mubasher',
-      src: 'https://live-hls-web-ajm.getaj.net/AJM/index.m3u8',
-      epg: [
-        '00:00–24:00 - بث مباشر'
-      ]
-    },
-    {
-      id: 4,
-      name: 'Al Jazeera Balkans',
-      src: 'https://live-hls-web-ajb.getaj.net/AJB/index.m3u8',
-      epg: [
-        '06:00 - Dobro jutro Balkane',
-        '12:00 - Vijesti',
-        '18:00 - Dnevnik'
-      ]
-    },
-    {
-      id: 5,
-      name: 'Al Jazeera Documentary',
-      src: 'https://live-hls-web-ajd.getaj.net/AJD/index.m3u8',
-      epg: [
-        '08:00 - Documentary World',
-        '14:00 - Inside Story Docs',
-        '20:00 - AJ Docs Prime'
-      ]
-    },
-    {
-      id: 6,
-      name: 'BBC News (HD)',
-      src: 'https://vs-hls-push-ww-live.akamaized.net/x=4/i=urn:bbc:pips:service:bbc_news_channel_hd/t=3840/v=pv14/b=5070016/main.m3u8',
-      epg: [
-        '06:00 - BBC Breakfast',
-        '13:00 - BBC News at One',
-        '18:00 - BBC News at Six'
-      ]
-    }
+    { id: 1, name: 'Al Jazeera Arabic', src: 'https://live-hls-web-aja.getaj.net/AJA/index.m3u8', epg: ['06:00 - صباح الجزيرة', '12:00 - الأخبار', '18:00 - الموجز المسائي'] },
+    { id: 2, name: 'Al Jazeera English', src: 'https://live-hls-web-aje.getaj.net/AJE/index.m3u8', epg: ['07:00 - AJ Morning News', '13:00 - AJ Newsroom', '19:00 - News Hour'] },
+    { id: 3, name: 'Al Jazeera Mubasher', src: 'https://live-hls-web-ajm.getaj.net/AJM/index.m3u8', epg: ['00:00–24:00 - Live'] },
+    { id: 4, name: 'Al Jazeera Balkans', src: 'https://live-hls-web-ajb.getaj.net/AJB/index.m3u8', epg: ['06:00 - Dobro jutro Balkane', '12:00 - Vijesti', '18:00 - Dnevnik'] },
+    { id: 5, name: 'Al Jazeera Documentary', src: 'https://live-hls-web-ajd.getaj.net/AJD/index.m3u8', epg: ['08:00 - Documentary World', '14:00 - Inside Story Docs', '20:00 - AJ Docs Prime'] },
+    { id: 6, name: 'BBC News (HD)', src: 'https://vs-hls-push-ww-live.akamaized.net/x=4/i=urn:bbc:pips:service:bbc_news_channel_hd/t=3840/v=pv14/b=5070016/main.m3u8', epg: ['06:00 - BBC Breakfast', '13:00 - News at One', '18:00 - News at Six'] }
   ];
 
-  const muteAllBtn = document.getElementById('muteAllBtn');
-  // === Play/Pause All toggle button ===
-  const playPauseAllBtn = document.getElementById('playPauseAllBtn');
+  // ------------------------------
+  // 2. Global DOM element pointers
+  // ------------------------------
   const grid = document.getElementById('grid');
+  const playPauseAllBtn = document.getElementById('playPauseAllBtn');
+  const muteAllBtn = document.getElementById('muteAllBtn');
+  const layoutBtn = document.getElementById('layoutBtn');
+  const layoutMenu = document.getElementById('layoutMenu');
   let favorites = JSON.parse(localStorage.getItem('favorites')) || [];
+  let dragSrc = null;  // for drag‑and‑drop source reference
 
-
+  // -----------------------------------
+  // 3. Play/Pause All toggle listener
+  // -----------------------------------
   playPauseAllBtn.addEventListener('click', () => {
-    const videos = Array.from(document.querySelectorAll('#grid video'));
-    // If any video is paused, we want to play all; otherwise pause all
-    const anyPaused = videos.some(video => video.paused);
+    const videos = Array.from(grid.querySelectorAll('video'));
+    const anyPaused = videos.some(v => v.paused);
 
-    videos.forEach(video => {
-      if (anyPaused) {
-        video.play().catch(() => { /* autoplay might be blocked */ });
-      } else {
-        video.pause();
-      }
+    videos.forEach(v => {
+      if (anyPaused) v.play().catch(() => { });  // ignore autoplay block
+      else v.pause();
     });
 
-    // Update the button icon
+    // swap button icon
     playPauseAllBtn.innerHTML = anyPaused
       ? '<i class="fas fa-pause"></i>'
       : '<i class="fas fa-play"></i>';
   });
 
-  // Mute or unmute all videos in the grid
+  // -----------------------------------
+  // 4. Mute/Unmute All listener
+  // -----------------------------------
   muteAllBtn.addEventListener('click', () => {
-    const videos = Array.from(document.querySelectorAll('#grid video'));
-    const allMuted = videos.every(video => video.muted);
+    const videos = Array.from(grid.querySelectorAll('video'));
+    const allMuted = videos.every(v => v.muted);
 
-    videos.forEach(video => {
-      video.muted = !allMuted;
-    });
+    videos.forEach(v => v.muted = !allMuted);
 
-    // Update the button icon
+    // swap button icon
     muteAllBtn.innerHTML = allMuted
       ? '<i class="fas fa-volume-up"></i>'
       : '<i class="fas fa-volume-mute"></i>';
   });
-  // Layout controls
-  const layoutBtn = document.getElementById('layoutBtn');
-  const layoutMenu = document.getElementById('layoutMenu');
-  layoutBtn.addEventListener('click', () => layoutMenu.classList.toggle('active'));
+
+  // --------------------------
+  // 5. Layout menu listeners
+  // --------------------------
+  layoutBtn.addEventListener('click', () => {
+    layoutMenu.classList.toggle('active');
+  });
+
   layoutMenu.querySelectorAll('li').forEach(li => {
     li.addEventListener('click', () => {
       createGrid(parseInt(li.dataset.value));
@@ -112,159 +69,242 @@ $(function () {
     });
   });
 
+  // -------------------------
+  // 6. Grid creation function
+  // -------------------------
   function createGrid(count) {
     grid.innerHTML = '';
-  
-    // Build an assignment array: real channels or null for empty slots
-    const assignment = [];
-    for (let i = 0; i < count; i++) {
-      assignment[i] = channels[i] || null;
-    }
-  
-    // Compute grid dimensions
+
+    // Build assignment: real channels or null for empty slots
+    const assignment = Array.from({ length: count }, (_, i) => channels[i] || null);
+
+    // Calculate rows/cols
     const cols = Math.ceil(Math.sqrt(count));
     const rows = Math.ceil(count / cols);
     grid.style.gridTemplateColumns = `repeat(${cols}, 1fr)`;
-    grid.style.gridTemplateRows    = `repeat(${rows}, 1fr)`;
-  
+    grid.style.gridTemplateRows = `repeat(${rows}, 1fr)`;
+
     // Render each slot
-    assignment.forEach((channel, i) => {
+    assignment.forEach((channel, idx) => {
       const frame = document.createElement('div');
       frame.draggable = true;
-      frame.dataset.index = i;
-  
+      frame.dataset.index = idx;
+
       if (channel) {
-        // —— Regular channel frame —— //
-  
+        // ——— Channel frame ———
         frame.className = 'channel-frame';
-  
+
+        // Create video element
         const video = document.createElement('video');
-        video.muted   = true;
-        video.controls= true;
+        video.muted = true;      // start muted
+        video.controls = true;
         video.loading = 'lazy';
-  
-        // HLS.js adaptive streaming (as before)
+
+        // Attach HLS stream if supported
         if (Hls.isSupported()) {
           const hls = new Hls({ capLevelToPlayerSize: true });
           hls.loadSource(channel.src);
           hls.attachMedia(video);
           hls.on(Hls.Events.MANIFEST_PARSED, () => video.play());
         } else if (video.canPlayType('application/vnd.apple.mpegurl')) {
+          // Native HLS support (Safari/iOS)
           video.src = channel.src;
           video.addEventListener('loadedmetadata', () => video.play());
         }
-  
-        // Overlay buttons (focus, EPG, favorite, DVR)…
+
+        // Build overlay buttons
         const overlay = document.createElement('div');
         overlay.className = 'overlay';
-        // … build your buttons exactly as before …
-  
+
+        // Focus (expand) button
+        const focusBtn = document.createElement('button');
+        focusBtn.innerHTML = '<i class="fas fa-expand"></i>';
+        focusBtn.title = 'Focus view';
+        focusBtn.addEventListener('click', () => toggleFocus(frame));
+        overlay.appendChild(focusBtn);
+
+        // EPG (guide) button
+        const epgBtn = document.createElement('button');
+        epgBtn.innerHTML = '<i class="far fa-calendar-alt"></i>';
+        epgBtn.title = 'Show EPG';
+        epgBtn.addEventListener('click', () => showEPG(channel));
+        overlay.appendChild(epgBtn);
+
+        // Favorite toggle button
+        const favBtn = document.createElement('button');
+        favBtn.innerHTML = favorites.includes(channel.id)
+          ? '<i class="fas fa-star"></i>'
+          : '<i class="far fa-star"></i>';
+        favBtn.title = 'Toggle Favorite';
+        favBtn.addEventListener('click', () => toggleFav(channel, favBtn));
+        overlay.appendChild(favBtn);
+
+        // DVR play/pause button
+        const dvrBtn = document.createElement('button');
+        dvrBtn.innerHTML = '<i class="fas fa-play"></i>';
+        dvrBtn.title = 'Play/Pause';
+        dvrBtn.addEventListener('click', () => {
+          if (video.paused) {
+            video.play();
+            dvrBtn.innerHTML = '<i class="fas fa-pause"></i>';
+          } else {
+            video.pause();
+            dvrBtn.innerHTML = '<i class="fas fa-play"></i>';
+          }
+        });
+        overlay.appendChild(dvrBtn);
+
         frame.appendChild(video);
         frame.appendChild(overlay);
-  
+
       } else {
-        // —— Placeholder for empty slot —— //
-  
+        // ——— Placeholder for empty slot ———
         frame.className = 'empty-frame';
         const addBtn = document.createElement('button');
         addBtn.innerHTML = '<i class="fas fa-plus"></i>';
         addBtn.title = 'Add channel to this slot';
-        addBtn.onclick = () => {
-          // TODO: open your channel-picker UI for slot i
-          console.log('Open channel picker for slot', i);
-        };
+        addBtn.addEventListener('click', () => {
+          console.log('Open channel picker for slot', idx);
+          // TODO: wire up your channel-picker UI here
+        });
         frame.appendChild(addBtn);
       }
-  
+
+      // Enable drag & drop on this frame
       addDragEvents(frame);
       grid.appendChild(frame);
     });
   }
-  
 
-
+  // --------------------------------------------
+  // 7. Focus mode: expand one frame to full view
+  // --------------------------------------------
   function toggleFocus(frame) {
     document.body.classList.toggle('focus-mode');
     if (document.body.classList.contains('focus-mode')) {
       frame.classList.add('focus-frame');
-      [...grid.children].forEach(child => { if (child !== frame) child.style.display = 'none'; });
+      // hide all others
+      [...grid.children].forEach(ch => {
+        if (ch !== frame) ch.style.display = 'none';
+      });
     } else {
-      [...grid.children].forEach(child => child.style.display = 'block');
+      // restore all
+      [...grid.children].forEach(ch => ch.style.display = 'block');
       frame.classList.remove('focus-frame');
     }
   }
 
+  // -------------------------------------------------
+  // 8. Show EPG modal for selected channel’s schedule
+  // -------------------------------------------------
   function showEPG(channel) {
-    document.getElementById('epgTitle').textContent = `EPG - ${channel.name}`;
-    const list = document.getElementById('epgList'); list.innerHTML = '';
-    channel.epg.forEach(item => { const li = document.createElement('li'); li.textContent = item; list.appendChild(li); });
+    $('#epgTitle').text(`EPG - ${channel.name}`);
+    const $list = $('#epgList').empty();
+    channel.epg.forEach(item => {
+      $('<li>').text(item).appendTo($list);
+    });
     toggleModal('epgModal');
   }
 
-  function toggleModal(id) { document.getElementById(id).classList.toggle('active'); }
+  // --------------------------
+  // 9. Simple modal toggler
+  // --------------------------
+  function toggleModal(id) {
+    $(`#${id}`).toggleClass('active');
+  }
 
+  // --------------------------------------------
+  // 10. Toggle favorite state and persist in LS
+  // --------------------------------------------
   function toggleFav(channel, btn) {
-    if (favorites.includes(channel.id)) { favorites = favorites.filter(id => id !== channel.id); btn.innerHTML = '<i class="far fa-star"></i>'; }
-    else { favorites.push(channel.id); btn.innerHTML = '<i class="fas fa-star"></i>'; }
+    if (favorites.includes(channel.id)) {
+      favorites = favorites.filter(id => id !== channel.id);
+      btn.innerHTML = '<i class="far fa-star"></i>';
+    } else {
+      favorites.push(channel.id);
+      btn.innerHTML = '<i class="fas fa-star"></i>';
+    }
     localStorage.setItem('favorites', JSON.stringify(favorites));
   }
 
-  document.getElementById('favoritesBtn').onclick = () => {
-    const list = document.getElementById('favList'); list.innerHTML = '';
-    favorites.forEach(id => { const ch = channels.find(c => c.id === id); const li = document.createElement('li'); li.textContent = ch.name; list.appendChild(li); });
-    toggleModal('favModal');
-  };
-
-  document.getElementById('shareBtn').onclick = () => {
-    html2canvas(grid).then(canvas => {
-      const link = document.createElement('a'); link.download = 'devloscreengrid-snapshot.png'; link.href = canvas.toDataURL(); link.click();
+  // --------------------------------------
+  // 11. Show favorites list in modal
+  // --------------------------------------
+  $('#favoritesBtn').on('click', () => {
+    const $favList = $('#favList').empty();
+    favorites.forEach(id => {
+      const ch = channels.find(c => c.id === id);
+      $('<li>').text(ch.name).appendTo($favList);
     });
-  };
+    toggleModal('favModal');
+  });
 
-  // Simulated breaking news
+  // --------------------------------------
+  // 12. Share snapshot via html2canvas
+  // --------------------------------------
+  $('#shareBtn').on('click', () => {
+    html2canvas(grid).then(canvas => {
+      const link = document.createElement('a');
+      link.download = 'devloscreengrid-snapshot.png';
+      link.href = canvas.toDataURL();
+      link.click();
+    });
+  });
+
+  // --------------------------------------
+  // 13. Simulate breaking news alert banner
+  // --------------------------------------
   setTimeout(() => {
-    document.getElementById('alertText').textContent = 'Major event happening now!';
-    document.getElementById('alert-banner').style.display = 'block';
+    $('#alertText').text('Major event happening now!');
+    $('#alert-banner').show();
   }, 10000);
 
-  // At the top of script.js
-  let dragSrc = null;
-
-  // Replace the old addDragEvents with this:
+  // ------------------------------
+  // 14. Drag & Drop functionality
+  // ------------------------------
   function addDragEvents(elem) {
-    // When drag starts, remember the source element
     elem.addEventListener('dragstart', e => {
       dragSrc = e.currentTarget;
-      e.currentTarget.classList.add('dragging');
+      elem.classList.add('dragging');
     });
-
-    // When drag ends, remove dragging style
     elem.addEventListener('dragend', e => {
-      e.currentTarget.classList.remove('dragging');
+      elem.classList.remove('dragging');
     });
-
-    // Allow dropping
-    elem.addEventListener('dragover', e => {
-      e.preventDefault();
-    });
-
-    // On drop, swap the two frame elements in the DOM
+    elem.addEventListener('dragover', e => e.preventDefault());
     elem.addEventListener('drop', e => {
       e.preventDefault();
-      const dropTarget = e.currentTarget;
-      if (!dragSrc || dropTarget === dragSrc) return;
+      const target = e.currentTarget;
+      if (!dragSrc || target === dragSrc) return;
 
       const parent = dragSrc.parentNode;
-      const dragNext = dragSrc.nextSibling;
-      const dropNext = dropTarget.nextSibling;
+      const nextDrag = dragSrc.nextSibling;
+      const nextTgt = target.nextSibling;
 
-      // Swap positions
-      parent.insertBefore(dragSrc, dropNext);
-      parent.insertBefore(dropTarget, dragNext);
+      // swap frame elements to preserve all listeners
+      parent.insertBefore(dragSrc, nextTgt);
+      parent.insertBefore(target, nextDrag);
     });
   }
 
-
-  // Initialize default grid
+  // -------------------------
+  // Initialize with 3×3 grid
+  // -------------------------
   createGrid(9);
+  [
+    { id: 'epgModal', closeBtn: '.epg-close' },
+    { id: 'favModal', closeBtn: '.fav-close' }
+  ].forEach(({ id, closeBtn }) => {
+    const modal = document.getElementById(id);
+
+    // Close when clicking the backdrop (only if target is the overlay)
+    modal.addEventListener('click', e => {
+      if (e.target === modal) toggleModal(id);
+    });
+
+    // Close when clicking the header “×” button
+    modal.querySelector(closeBtn)
+      .addEventListener('click', () => toggleModal(id));
+  });
+
+
 });

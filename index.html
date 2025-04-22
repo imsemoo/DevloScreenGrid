@@ -192,22 +192,23 @@
             height: calc(100vh - 60px);
             background: #000;
         }
-/* Style for empty slots */
-.empty-frame {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background: var(--color-background);
-  border: 2px dashed var(--color-border);
-}
 
-.empty-frame button {
-  background: none;
-  border: none;
-  color: var(--color-secondary);
-  font-size: 2rem;
-  cursor: pointer;
-}
+        /* Style for empty slots */
+        .empty-frame {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: var(--color-background);
+            border: 2px dashed var(--color-border);
+        }
+
+        .empty-frame button {
+            background: none;
+            border: none;
+            color: var(--color-secondary);
+            font-size: 2rem;
+            cursor: pointer;
+        }
 
         .channel-frame {
             position: relative;
@@ -279,17 +280,156 @@
             display: flex;
         }
 
-        #alert-banner {
+        /* EPG Modal Overlay */
+        .epg-modal-overlay {
             position: fixed;
-            bottom: 0;
-            width: 100%;
-            background: #d32f2f;
-            color: #fff;
-            text-align: center;
-            padding: 8px;
+            inset: 0;
+            /* top/right/bottom/left = 0 */
+            background: rgba(0, 0, 0, 0.6);
+            /* dark backdrop */
             display: none;
-            z-index: 1002;
+            /* hidden by default */
+            align-items: center;
+            justify-content: center;
+            z-index: 1001;
         }
+
+        /* Show when active */
+        .epg-modal-overlay.active {
+            display: flex;
+        }
+
+        /* Modal Container */
+        .epg-modal {
+            background: var(--color-background);
+            border-radius: 8px;
+            width: 90%;
+            max-width: 400px;
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* Header */
+        .epg-header {
+            background: var(--color-primary);
+            color: #fff;
+            padding: 12px 16px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .epg-title {
+            margin: 0;
+            font-size: 1.1rem;
+            font-weight: 600;
+        }
+
+        .epg-close {
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            line-height: 1;
+            color: #fff;
+            cursor: pointer;
+        }
+
+        /* Body */
+        .epg-body {
+            padding: 16px;
+            max-height: 60vh;
+            /* allow scrolling */
+            overflow-y: auto;
+        }
+
+        /* List items */
+        .epg-list {
+            list-style: none;
+            margin: 0;
+            padding: 0;
+        }
+
+        .epg-list li {
+            padding: 8px 0;
+            border-bottom: 1px solid var(--color-border);
+            font-size: 0.95rem;
+            color: var(--color-text);
+        }
+
+        .epg-list li:last-child {
+            border-bottom: none;
+        }
+        /* Favorites Modal Overlay */
+.fav-modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.6);
+  display: none;
+  align-items: center;
+  justify-content: center;
+  z-index: 1001;
+}
+.fav-modal-overlay.active {
+  display: flex;
+}
+
+/* Favorites Modal Container */
+.fav-modal {
+  background: var(--color-background);
+  border-radius: 8px;
+  width: 90%;
+  max-width: 360px;
+  box-shadow: 0 8px 24px rgba(0,0,0,0.2);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+/* Header */
+.fav-header {
+  background: var(--color-primary);
+  color: #fff;
+  padding: 12px 16px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.fav-title {
+  margin: 0;
+  font-size: 1.1rem;
+  font-weight: 600;
+}
+.fav-close {
+  background: none;
+  border: none;
+  font-size: 1.5rem;
+  color: #fff;
+  cursor: pointer;
+}
+
+/* Body */
+.fav-body {
+  padding: 16px;
+  max-height: 50vh;
+  overflow-y: auto;
+}
+.fav-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+.fav-list li {
+  padding: 8px 0;
+  border-bottom: 1px solid var(--color-border);
+  font-size: 0.95rem;
+  color: var(--color-text);
+}
+.fav-list li:last-child {
+  border-bottom: none;
+}
+
     </style>
 </head>
 
@@ -301,12 +441,12 @@
             </a>
         </div>
         <div class="controls">
-             <!-- Bulk control buttons: Play All / Pause All / Mute All -->
- <!-- With this single toggle button: -->
-<button id="playPauseAllBtn" aria-label="Play/Pause All">
-    <i class="fas fa-play"></i>
-  </button>
-    <button id="muteAllBtn" aria-label="Mute/Unmute All"><i class="fas fa-volume-mute"></i></button>
+            <!-- Bulk control buttons: Play All / Pause All / Mute All -->
+            <!-- With this single toggle button: -->
+            <button id="playPauseAllBtn" aria-label="Play/Pause All">
+                <i class="fas fa-play"></i>
+            </button>
+            <button id="muteAllBtn" aria-label="Mute/Unmute All"><i class="fas fa-volume-mute"></i></button>
             <button id="layoutBtn" aria-label="Choose Grid Layout">
                 <i class="fas fa-th-large"></i>
             </button>
@@ -330,23 +470,54 @@
     <div id="grid"></div>
 
     <!-- EPG Modal -->
-    <div id="epgModal" class="modal">
-        <div class="content">
-            <h2 id="epgTitle">EPG</h2>
-            <ul id="epgList"></ul>
-            <button onclick="toggleModal('epgModal')">Close</button>
+    <!-- new: Professional EPG Modal -->
+    <div id="epgModal" class="epg-modal-overlay" aria-hidden="true">
+        <div class="epg-modal">
+            <header class="epg-header">
+                <h2 id="epgTitle" class="epg-title">EPG Schedule</h2>
+                <button class="epg-close" aria-label="Close EPG">&times;</button>
+            </header>
+            <div class="epg-body">
+                <ul id="epgList" class="epg-list"></ul>
+            </div>
         </div>
     </div>
 
-    <!-- Favorites Modal -->
-    <div id="favModal" class="modal">
+
+    <!-- Favorites Modal (updated) -->
+<div id="favModal" class="fav-modal-overlay" aria-hidden="true">
+    <div class="fav-modal">
+      <header class="fav-header">
+        <h2 class="fav-title">My Favorites</h2>
+        <button class="fav-close" aria-label="Close Favorites">&times;</button>
+      </header>
+      <div class="fav-body">
+        <ul id="favList" class="fav-list"></ul>
+        <!-- Optionally add a “Clear All” button here -->
+      </div>
+    </div>
+  </div>
+  
+
+    <!-- Schedule Recording Modal -->
+    <div id="scheduleModal" class="modal">
         <div class="content">
-            <h2>Favorite Channels</h2>
-            <ul id="favList"></ul>
-            <button onclick="toggleModal('favModal')">Close</button>
+            <h2>Schedule Recording</h2>
+            <form id="scheduleForm">
+                <input type="hidden" id="scheduleChannelId">
+                <div>
+                    <label for="scheduleStart">Start time:</label>
+                    <input type="datetime-local" id="scheduleStart" required>
+                </div>
+                <div>
+                    <label for="scheduleDuration">Duration (minutes):</label>
+                    <input type="number" id="scheduleDuration" min="1" required>
+                </div>
+                <button type="submit">Confirm</button>
+                <button type="button" onclick="toggleModal('scheduleModal')">Cancel</button>
+            </form>
         </div>
     </div>
-
 
     <script src="assets/js/jquery-3.7.1.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
