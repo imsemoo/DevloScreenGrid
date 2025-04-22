@@ -114,62 +114,73 @@ $(function () {
 
   function createGrid(count) {
     grid.innerHTML = '';
+  
+    // Build an assignment array: real channels or null for empty slots
+    const assignment = [];
+    for (let i = 0; i < count; i++) {
+      assignment[i] = channels[i] || null;
+    }
+  
+    // Compute grid dimensions
     const cols = Math.ceil(Math.sqrt(count));
     const rows = Math.ceil(count / cols);
     grid.style.gridTemplateColumns = `repeat(${cols}, 1fr)`;
-    grid.style.gridTemplateRows = `repeat(${rows}, 1fr)`;
-
-    for (let i = 0; i < count; i++) {
+    grid.style.gridTemplateRows    = `repeat(${rows}, 1fr)`;
+  
+    // Render each slot
+    assignment.forEach((channel, i) => {
       const frame = document.createElement('div');
-      frame.className = 'channel-frame';
       frame.draggable = true;
       frame.dataset.index = i;
-
-      const channel = channels[i % channels.length];
-      const video = document.createElement('video');
-
-      // ⬅️ كتم الصوت افتراضيًا
-      video.muted = true;
-      video.controls = true;
-      video.loading = 'lazy';
-
-      // HLS.js adaptive streaming
-      if (Hls.isSupported()) {
-        const hls = new Hls({ capLevelToPlayerSize: true });
-        hls.loadSource(channel.src);
-        hls.attachMedia(video);
-        hls.on(Hls.Events.MANIFEST_PARSED, () => {
-          video.play();
-        });
-      } else if (video.canPlayType('application/vnd.apple.mpegurl')) {
-        video.src = channel.src;
-        video.addEventListener('loadedmetadata', () => video.play());
+  
+      if (channel) {
+        // —— Regular channel frame —— //
+  
+        frame.className = 'channel-frame';
+  
+        const video = document.createElement('video');
+        video.muted   = true;
+        video.controls= true;
+        video.loading = 'lazy';
+  
+        // HLS.js adaptive streaming (as before)
+        if (Hls.isSupported()) {
+          const hls = new Hls({ capLevelToPlayerSize: true });
+          hls.loadSource(channel.src);
+          hls.attachMedia(video);
+          hls.on(Hls.Events.MANIFEST_PARSED, () => video.play());
+        } else if (video.canPlayType('application/vnd.apple.mpegurl')) {
+          video.src = channel.src;
+          video.addEventListener('loadedmetadata', () => video.play());
+        }
+  
+        // Overlay buttons (focus, EPG, favorite, DVR)…
+        const overlay = document.createElement('div');
+        overlay.className = 'overlay';
+        // … build your buttons exactly as before …
+  
+        frame.appendChild(video);
+        frame.appendChild(overlay);
+  
       } else {
-        console.warn('HLS غير مدعوم في هذا المتصفح.');
+        // —— Placeholder for empty slot —— //
+  
+        frame.className = 'empty-frame';
+        const addBtn = document.createElement('button');
+        addBtn.innerHTML = '<i class="fas fa-plus"></i>';
+        addBtn.title = 'Add channel to this slot';
+        addBtn.onclick = () => {
+          // TODO: open your channel-picker UI for slot i
+          console.log('Open channel picker for slot', i);
+        };
+        frame.appendChild(addBtn);
       }
-
-      // بقية الأوفرلي وأزرار التحكم...
-      const overlay = document.createElement('div');
-      overlay.className = 'overlay';
-      // مثلاً نضيف زر تشغيل/إيقاف كتم خاص بالإطار:
-      const volBtn = document.createElement('button');
-      volBtn.innerHTML = '<i class="fas fa-volume-mute"></i>';
-      volBtn.onclick = () => {
-        video.muted = !video.muted;
-        volBtn.innerHTML = video.muted
-          ? '<i class="fas fa-volume-mute"></i>'
-          : '<i class="fas fa-volume-up"></i>';
-      };
-      overlay.appendChild(volBtn);
-
-      // ... أزرار التركيز، EPG، المفضلة، DVR
-
-      frame.appendChild(video);
-      frame.appendChild(overlay);
+  
       addDragEvents(frame);
       grid.appendChild(frame);
-    }
+    });
   }
+  
 
 
   function toggleFocus(frame) {
@@ -216,42 +227,42 @@ $(function () {
     document.getElementById('alert-banner').style.display = 'block';
   }, 10000);
 
-// At the top of script.js
-let dragSrc = null;
+  // At the top of script.js
+  let dragSrc = null;
 
-// Replace the old addDragEvents with this:
-function addDragEvents(elem) {
-  // When drag starts, remember the source element
-  elem.addEventListener('dragstart', e => {
-    dragSrc = e.currentTarget;
-    e.currentTarget.classList.add('dragging');
-  });
+  // Replace the old addDragEvents with this:
+  function addDragEvents(elem) {
+    // When drag starts, remember the source element
+    elem.addEventListener('dragstart', e => {
+      dragSrc = e.currentTarget;
+      e.currentTarget.classList.add('dragging');
+    });
 
-  // When drag ends, remove dragging style
-  elem.addEventListener('dragend', e => {
-    e.currentTarget.classList.remove('dragging');
-  });
+    // When drag ends, remove dragging style
+    elem.addEventListener('dragend', e => {
+      e.currentTarget.classList.remove('dragging');
+    });
 
-  // Allow dropping
-  elem.addEventListener('dragover', e => {
-    e.preventDefault();
-  });
+    // Allow dropping
+    elem.addEventListener('dragover', e => {
+      e.preventDefault();
+    });
 
-  // On drop, swap the two frame elements in the DOM
-  elem.addEventListener('drop', e => {
-    e.preventDefault();
-    const dropTarget = e.currentTarget;
-    if (!dragSrc || dropTarget === dragSrc) return;
+    // On drop, swap the two frame elements in the DOM
+    elem.addEventListener('drop', e => {
+      e.preventDefault();
+      const dropTarget = e.currentTarget;
+      if (!dragSrc || dropTarget === dragSrc) return;
 
-    const parent = dragSrc.parentNode;
-    const dragNext = dragSrc.nextSibling;
-    const dropNext = dropTarget.nextSibling;
+      const parent = dragSrc.parentNode;
+      const dragNext = dragSrc.nextSibling;
+      const dropNext = dropTarget.nextSibling;
 
-    // Swap positions
-    parent.insertBefore(dragSrc, dropNext);
-    parent.insertBefore(dropTarget, dragNext);
-  });
-}
+      // Swap positions
+      parent.insertBefore(dragSrc, dropNext);
+      parent.insertBefore(dropTarget, dragNext);
+    });
+  }
 
 
   // Initialize default grid

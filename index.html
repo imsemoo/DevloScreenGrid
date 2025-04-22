@@ -192,6 +192,22 @@
             height: calc(100vh - 60px);
             background: #000;
         }
+/* Style for empty slots */
+.empty-frame {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--color-background);
+  border: 2px dashed var(--color-border);
+}
+
+.empty-frame button {
+  background: none;
+  border: none;
+  color: var(--color-secondary);
+  font-size: 2rem;
+  cursor: pointer;
+}
 
         .channel-frame {
             position: relative;
