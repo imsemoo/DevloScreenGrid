@@ -1,0 +1,221 @@
+:root {
+  /* Primary brand color (deep navy) */
+  --color-primary: #07475d;
+
+  /* Secondary brand color (warm red) */
+  --color-secondary: #e54f29;
+
+  /* Accent color (bright orange) */
+  --color-accent: #faa71e;
+
+  /* Very light background */
+  --color-background: #fbf9f2;
+
+  /* Body text on light backgrounds */
+  --color-text: #222222;
+
+  /* Muted text for subtitles, captions */
+  --color-muted: #6b6b6b;
+
+  /* Light border/shadow for cards and menus */
+  --color-border: #dddddd;
+
+  /* Hover highlight (slightly darker than accent) */
+  --color-hover: #e59517;
+}
+
+
+/* Reset margin and padding for all elements */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+/* Font Face Declarations */
+@font-face {
+  font-family: "DMSans-Regular";
+  src: url(../fonts/en/DMSans-Regular.ttf);
+}
+
+@font-face {
+  font-family: "DMSans-Medium";
+  src: url(../fonts/en/DMSans-Medium.ttf);
+}
+
+
+
+@font-face {
+  font-family: "DMSans-SemiBold";
+  src: url(../fonts/en/DMSans-SemiBold.ttf);
+}
+
+@font-face {
+  font-family: "DMSans-Bold";
+  src: url(../fonts/en/DMSans-Bold.ttf);
+}
+
+@font-face {
+  font-family: "DMSans-ExtraBold";
+  src: url(../fonts/en/DMSans-ExtraBold.ttf);
+}
+
+/* Global Body Styles */
+body {
+  line-height: 150%;
+  font-family: "DMSans-Regular";
+  color: var(--color-dark);
+  overflow: hidden;
+
+}
+
+
+
+/* Text Utility Classes */
+.text-muted {
+  color: var(--color-muted) !important;
+}
+
+.text-secondary {
+  color: var(--color-secondary) !important;
+
+}
+
+
+
+
+/* Primary Button */
+.btn-primary {
+  background-color: var(--color-primary);
+  border-color: var(--color-primary);
+  transition: background-color 0.3s ease, border-color 0.3s ease;
+}
+
+.btn-primary:hover,
+.btn-primary:focus,
+.btn-primary:active {
+  /* Darker variant for hover effect */
+  background-color: #019ecf;
+  border-color: #019ecf;
+}
+
+/* Secondary Button */
+.btn-secondary {
+  background-color: var(--color-secondary);
+  border-color: var(--color-secondary);
+  transition: background-color 0.3s ease, border-color 0.3s ease;
+}
+
+.btn-secondary:hover,
+.btn-secondary:focus,
+.btn-secondary:active {
+  /* Darker variant for hover effect */
+  background-color: var(--color-secondary-hover);
+  border-color: var(--color-secondary-hover);
+}
+
+.btn-outline-secondary {
+  background-color: #EBF2FF5E !important;
+  border-color: var(--color-secondary) !important;
+  color: var(--color-secondary) !important;
+  transition: background-color 0.3s ease, border-color 0.3s ease;
+}
+
+/* Headings */
+.h1,
+.h2,
+.h3,
+.h4,
+.h5,
+.h6,
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-family: "DMSans-Bold";
+  margin: 0;
+  line-height: 150%;
+}
+
+h1 {
+  font-size: 4rem;
+}
+
+h2 {
+  font-size: 3rem;
+}
+
+h3 {
+  font-size: 2rem;
+}
+
+h4 {
+  font-size: 1.8rem;
+}
+
+h5 {
+  font-size: 1.3rem;
+}
+
+/* Paragraph Styles */
+p {
+  font-size: 1rem;
+  line-height: 150%;
+  color: var(--color-muted);
+  margin: 0;
+}
+
+/* Input Placeholder Alignment */
+input::placeholder {
+  text-align: start;
+  font-size: 1rem;
+}
+
+/* Link Styles */
+a,
+a:active,
+a:focus,
+a:hover {
+  text-decoration: none;
+}
+
+a:active,
+a:focus,
+a:hover {
+  outline: 0;
+}
+
+/* Responsive Image Styling */
+img {
+  max-width: 100%;
+  height: auto;
+}
+
+/* List Reset */
+ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+/* Button Styling */
+.btn {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  justify-content: center;
+  width: max-content;
+  padding: 8px 20px;
+  font-size: 1rem;
+}
+
+/* Overlay Styling */
+.overlay {
+  background: rgba(0, 0, 0, 0.6);
+  color: var(--text-color);
+}
+
+
+@media (min-width: 768px) {}
