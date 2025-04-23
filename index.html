@@ -105,16 +105,58 @@
         }
 
         /* Header & Controls */
+        /* hide header below viewport by default, slide up when .visible */
         header {
+            position: fixed;
+            bottom: 0;
+            left: 50%;
+            width: 100%;
+            transform: translate(-50%, 100%);
+            transition: transform .3s;
             display: flex;
             align-items: center;
             justify-content: space-between;
             padding: 10px 20px;
-            background: #fbf9f2;
-            color: #222222;
-            position: relative;
+            background: var(--color-background);
+            border-radius: 16px 16px 0 0;
+            border: 1px solid var(--color-border);
             z-index: 1000;
+            width: max-content;
         }
+
+        /* when this class is added, header is visible */
+        header.visible {
+            transform: translate(-50%, 0);
+
+        }
+
+        /* the transparent hover strip at bottom */
+        #hoverArea {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            height: 80px;
+            /* adjust how tall the sensitive zone is */
+            width: 100%;
+            z-index: 900;
+            /* invisible but still catches hover */
+            background: transparent;
+        }
+
+        /* MOBILE: always show header, fixed to bottom */
+        @media (max-width: 768px) {
+            header {
+                transform: translateY(0) !important;
+                border-radius: 0;
+                width: 100%;
+            }
+
+            #hoverArea {
+                display: none;
+                /* disable hover-trigger on mobile */
+            }
+        }
+
 
         .logo img {
             display: block;
@@ -144,9 +186,6 @@
 
         }
 
-        .controls button:hover {
-            background: #e59517;
-        }
 
         /* Layout menu dropdown */
         .layout-menu {
@@ -190,6 +229,7 @@
             display: grid;
             width: 100vw;
             height: calc(100vh - 60px);
+            height: 100vh;
             background: #000;
         }
 
@@ -280,162 +320,6 @@
             display: flex;
         }
 
-        /* EPG Modal Overlay */
-        .epg-modal-overlay {
-            position: fixed;
-            inset: 0;
-            /* top/right/bottom/left = 0 */
-            background: rgba(0, 0, 0, 0.6);
-            /* dark backdrop */
-            display: none;
-            /* hidden by default */
-            align-items: center;
-            justify-content: center;
-            z-index: 1001;
-        }
-
-        /* Show when active */
-        .epg-modal-overlay.active {
-            display: flex;
-        }
-
-        /* Modal Container */
-        .epg-modal {
-            background: var(--color-background);
-            border-radius: 8px;
-            width: 90%;
-            max-width: 400px;
-            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
-            overflow: hidden;
-            display: flex;
-            flex-direction: column;
-        }
-
-        /* Header */
-        .epg-header {
-            background: var(--color-primary);
-            color: #fff;
-            padding: 12px 16px;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-        }
-
-        .epg-title {
-            margin: 0;
-            font-size: 1.1rem;
-            font-weight: 600;
-        }
-
-        .epg-close {
-            background: none;
-            border: none;
-            font-size: 1.5rem;
-            line-height: 1;
-            color: #fff;
-            cursor: pointer;
-        }
-
-        /* Body */
-        .epg-body {
-            padding: 16px;
-            max-height: 60vh;
-            /* allow scrolling */
-            overflow-y: auto;
-        }
-
-        /* List items */
-        .epg-list {
-            list-style: none;
-            margin: 0;
-            padding: 0;
-        }
-
-        .epg-list li {
-            padding: 8px 0;
-            border-bottom: 1px solid var(--color-border);
-            font-size: 0.95rem;
-            color: var(--color-text);
-        }
-
-        .epg-list li:last-child {
-            border-bottom: none;
-        }
-
-        /* Favorites Modal Overlay */
-        .fav-modal-overlay {
-            position: fixed;
-            inset: 0;
-            background: rgba(0, 0, 0, 0.6);
-            display: none;
-            align-items: center;
-            justify-content: center;
-            z-index: 1001;
-        }
-
-        .fav-modal-overlay.active {
-            display: flex;
-        }
-
-        /* Favorites Modal Container */
-        .fav-modal {
-            background: var(--color-background);
-            border-radius: 8px;
-            width: 90%;
-            max-width: 360px;
-            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
-            display: flex;
-            flex-direction: column;
-            overflow: hidden;
-        }
-
-        /* Header */
-        .fav-header {
-            background: var(--color-primary);
-            color: #fff;
-            padding: 12px 16px;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-        }
-
-        .fav-title {
-            margin: 0;
-            font-size: 1.1rem;
-            font-weight: 600;
-        }
-
-        .fav-close {
-            background: none;
-            border: none;
-            font-size: 1.5rem;
-            color: #fff;
-            cursor: pointer;
-        }
-
-        /* Body */
-        .fav-body {
-            padding: 16px;
-            max-height: 50vh;
-            overflow-y: auto;
-        }
-
-        .fav-list {
-            list-style: none;
-            margin: 0;
-            padding: 0;
-        }
-
-        .fav-list li {
-            padding: 8px 0;
-            border-bottom: 1px solid var(--color-border);
-            font-size: 0.95rem;
-            color: var(--color-text);
-        }
-
-        .fav-list li:last-child {
-            border-bottom: none;
-        }
 
         /* Overlay */
         .modal-overlay {
@@ -452,83 +336,97 @@
             display: flex;
         }
 
+        /* Overlay covers the screen */
+        .modal-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.6);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 2000;
+        }
+
+        .modal-overlay.active {
+            display: flex;
+        }
+
         /* Modal box */
-        .auth-modal {
+        .login-modal {
             background: var(--color-background);
             border-radius: 8px;
             width: 90%;
-            max-width: 380px;
+            max-width: 360px;
             box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
+            overflow: hidden;
             display: flex;
             flex-direction: column;
         }
 
         /* Header */
-        .modal-header {
+        .login-header {
             background: var(--color-primary);
             color: #fff;
-            padding: 12px 16px;
+            padding: 16px;
             display: flex;
             justify-content: space-between;
+            align-items: center;
         }
 
-        .modal-close {
+        .login-header h2 {
+            margin: 0;
+            font-size: 1.25rem;
+        }
+
+        .login-header .modal-close {
             background: none;
             border: none;
-            font-size: 1.5rem;
             color: #fff;
+            font-size: 1.5rem;
             cursor: pointer;
         }
 
-        /* Tabs */
-        .auth-tabs {
+        /* Body & Form */
+        .login-body {
+            padding: 24px;
+        }
+
+        #loginForm {
             display: flex;
-            border-bottom: 1px solid var(--color-border);
+            flex-direction: column;
         }
 
-        .auth-tabs button {
-            flex: 1;
-            padding: 10px;
-            background: none;
-            border: none;
-            cursor: pointer;
-        }
-
-        .auth-tabs .active {
-            border-bottom: 2px solid var(--color-secondary);
-            font-weight: 600;
-        }
-
-        /* Forms */
-        .auth-form {
-            display: none;
-            padding: 16px;
-        }
-
-        .auth-form.active {
-            display: block;
-        }
-
-        .auth-form input {
+        #loginForm input {
             width: 100%;
-            margin-bottom: 12px;
-            padding: 8px;
+            padding: 12px;
+            margin-bottom: 16px;
+            border: 1px solid var(--color-border);
+            border-radius: 4px;
+            font-size: 1rem;
         }
 
-        .auth-form button {
+        .btn-submit {
             width: 100%;
-            padding: 10px;
+            padding: 12px;
             background: var(--color-secondary);
             color: #fff;
             border: none;
+            border-radius: 4px;
+            font-size: 1rem;
             cursor: pointer;
+            transition: background .2s;
         }
 
+        .btn-submit:hover {
+            background: var(--color-hover);
+        }
+
+
         #recordBtn {
-            color: var(--color-secondary);
+            color: #fff;
             font-size: 1.2rem;
             transition: color .2s;
-            background: #fff;
+            background: var(--color-secondary);
             border: 1px solid var(--color-secondary);
         }
 
@@ -536,9 +434,111 @@
             color: red;
         }
 
-        #recordBtn:hover {
-            color: var(--color-hover);
+
+        /* Make both <video> and <iframe> fill their .channel-frame */
+        .channel-frame video,
+        .channel-frame .youtube-frame {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            /* crops/zooms to fill without distortion */
+            border: none;
         }
+
+        .channel-frame.dragging {
+            opacity: 0.6;
+        }
+
+        #dragModeBtn.active {
+            color: var(--color-secondary);
+            background-color: #fff;
+            border: 1px solid var(--color-secondary);
+        }
+
+
+        /* —— Groups Sidebar —— */
+.group-panel {
+  position: fixed;
+  top: 0; left: 0;
+  height: 100vh;
+  width: 250px;
+  background: var(--color-background);
+  border-right: 1px solid var(--color-border);
+  box-shadow: 2px 0 8px rgba(0,0,0,0.1);
+  transform: translateX(-220px);
+  transition: transform .3s ease;
+  display: flex;
+  flex-direction: column;
+  z-index: 1500;
+}
+.group-panel.expanded { transform: translateX(0); }
+.group-panel.collapsed { transform: translateX(-220px); }
+
+/* Header: icon-only */
+.group-header {
+  display: flex;
+  align-items: center;
+  padding: 12px;
+  position: relative;
+}
+.group-header .icon-btn {
+  background: none;
+  border: none;
+  font-size: 1.2rem;
+  cursor: pointer;
+  color: var(--color-secondary);
+}
+.group-header .tooltip {
+  position: absolute;
+  left: 40px; top: 12px;
+  font-size: .85rem;
+  opacity: 0;
+  transition: opacity .2s;
+}
+.group-panel.expanded .tooltip { opacity: 1; }
+
+/* Group List */
+.group-list {
+  flex: 1;
+  overflow-y: auto;
+}
+.group-item {
+  display: flex;
+  align-items: center;
+  padding: 8px;
+  cursor: pointer;
+}
+.group-item.active { background: var(--color-accent); color: #fff; }
+.group-item .icon { width: 24px; text-align: center; }
+.group-item .label {
+  margin-left: 8px;
+  white-space: nowrap;
+  opacity: 0;
+  transition: opacity .2s;
+}
+.group-panel.expanded .label { opacity: 1; }
+
+/* Stream List */
+.stream-list {
+  border-top: 1px solid var(--color-border);
+  padding: 8px;
+  max-height: 40vh;
+  overflow-y: auto;
+}
+.stream-item {
+  display: flex;
+  align-items: center;
+  padding: 6px;
+  cursor: grab;
+}
+.stream-item:active { cursor: grabbing; }
+.stream-item .icon { width: 20px; text-align: center; }
+.stream-item .label {
+  margin-left: 6px;
+  font-size: .9rem;
+  flex: 1;
+}
+
     </style>
 </head>
 
@@ -550,10 +550,19 @@
             </a>
         </div>
         <div class="controls">
+            <!-- Groups toggle -->
+            <button id="groupsBtn" aria-label="Groups (G)">
+                <i class="fas fa-layer-group"></i>
+            </button>
+
+            <button id="dragModeBtn" aria-label="Toggle Drag Mode">
+                <i class="fas fa-arrows-alt"></i>
+            </button>
+
             <!-- Bulk control buttons: Play All / Pause All / Mute All -->
-            <!-- With this single toggle button: -->
+
             <button id="playPauseAllBtn" aria-label="Play/Pause All">
-                <i class="fas fa-play"></i>
+                <i class="fas fa-pause"></i>
             </button>
             <button id="muteAllBtn" aria-label="Mute/Unmute All"><i class="fas fa-volume-mute"></i></button>
             <button id="layoutBtn" aria-label="Choose Grid Layout">
@@ -579,43 +588,32 @@
             <button id="loginBtn" class="auth-btn" aria-label="Login">
                 <i class="fas fa-sign-in-alt"></i>
             </button>
-            <button id="signupBtn" class="auth-btn" aria-label="Sign Up">
-                <i class="fas fa-user-plus"></i>
-            </button>
+
 
         </div>
     </header>
+<!-- Groups Sidebar -->
+<div id="groupPanel" class="group-panel collapsed">
+    <header class="group-header">
+      <button id="addGroupBtn" class="icon-btn" aria-label="New Group (N)">
+        <i class="fas fa-plus"></i>
+      </button>
+      <span class="tooltip">New Group (N)</span>
+    </header>
+    <nav id="groupList" class="group-list">
+      <!-- dynamically populated -->
+    </nav>
+    <section id="streamList" class="stream-list">
+      <!-- streams for selected group -->
+    </section>
+  </div>
+  
+
+    <div id="hoverArea"></div>
+
 
     <div id="grid"></div>
 
-    <!-- EPG Modal -->
-    <!-- new: Professional EPG Modal -->
-    <div id="epgModal" class="epg-modal-overlay" aria-hidden="true">
-        <div class="epg-modal">
-            <header class="epg-header">
-                <h2 id="epgTitle" class="epg-title">EPG Schedule</h2>
-                <button class="epg-close" aria-label="Close EPG">&times;</button>
-            </header>
-            <div class="epg-body">
-                <ul id="epgList" class="epg-list"></ul>
-            </div>
-        </div>
-    </div>
-
-
-    <!-- Favorites Modal (updated) -->
-    <div id="favModal" class="fav-modal-overlay" aria-hidden="true">
-        <div class="fav-modal">
-            <header class="fav-header">
-                <h2 class="fav-title">My Favorites</h2>
-                <button class="fav-close" aria-label="Close Favorites">&times;</button>
-            </header>
-            <div class="fav-body">
-                <ul id="favList" class="fav-list"></ul>
-                <!-- Optionally add a “Clear All” button here -->
-            </div>
-        </div>
-    </div>
 
 
     <!-- Schedule Recording Modal -->
@@ -637,41 +635,30 @@
             </form>
         </div>
     </div>
-    <!-- Authentication Modal -->
-    <div id="authModal" class="modal-overlay" aria-hidden="true">
-        <div class="modal auth-modal">
-            <header class="modal-header">
-                <h2 class="modal-title">Welcome</h2>
+    <!-- Login Modal -->
+    <div id="loginModal" class="modal-overlay" aria-hidden="true">
+        <div class="login-modal">
+            <header class="login-header">
+                <h2>Log In</h2>
                 <button class="modal-close" aria-label="Close">&times;</button>
             </header>
-            <div class="modal-body">
-                <!-- Tab navigation -->
-                <nav class="auth-tabs">
-                    <button data-tab="login" class="active">Login</button>
-                    <button data-tab="signup">Sign Up</button>
-                </nav>
-                <!-- Forms -->
-                <form id="loginForm" class="auth-form active">
+            <div class="login-body">
+                <form id="loginForm">
                     <input type="email" placeholder="Email" required>
                     <input type="password" placeholder="Password" required>
-                    <label><input type="checkbox"> Remember me</label>
-                    <button type="submit">Log In</button>
-                </form>
-                <form id="signupForm" class="auth-form">
-                    <input type="text" placeholder="Username" required>
-                    <input type="email" placeholder="Email" required>
-                    <input type="password" placeholder="Password" required>
-                    <button type="submit">Create Account</button>
+                    <button type="submit" class="btn-submit">Log In</button>
                 </form>
             </div>
         </div>
     </div>
 
+
     <script src="assets/js/jquery-3.7.1.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
     <!-- load html2canvas first -->
     <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
-    >
+    <script src="https://www.youtube.com/iframe_api"></script>
+
 
     <script src="assets/js/script.js"></script>
 
