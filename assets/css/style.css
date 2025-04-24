@@ -69,153 +69,353 @@ body {
 
 }
 
-
-
-/* Text Utility Classes */
-.text-muted {
-  color: var(--color-muted) !important;
-}
-
-.text-secondary {
-  color: var(--color-secondary) !important;
-
-}
-
-
-
-
-/* Primary Button */
-.btn-primary {
-  background-color: var(--color-primary);
-  border-color: var(--color-primary);
-  transition: background-color 0.3s ease, border-color 0.3s ease;
-}
-
-.btn-primary:hover,
-.btn-primary:focus,
-.btn-primary:active {
-  /* Darker variant for hover effect */
-  background-color: #019ecf;
-  border-color: #019ecf;
-}
-
-/* Secondary Button */
-.btn-secondary {
-  background-color: var(--color-secondary);
-  border-color: var(--color-secondary);
-  transition: background-color 0.3s ease, border-color 0.3s ease;
-}
-
-.btn-secondary:hover,
-.btn-secondary:focus,
-.btn-secondary:active {
-  /* Darker variant for hover effect */
-  background-color: var(--color-secondary-hover);
-  border-color: var(--color-secondary-hover);
-}
-
-.btn-outline-secondary {
-  background-color: #EBF2FF5E !important;
-  border-color: var(--color-secondary) !important;
-  color: var(--color-secondary) !important;
-  transition: background-color 0.3s ease, border-color 0.3s ease;
-}
-
-/* Headings */
-.h1,
-.h2,
-.h3,
-.h4,
-.h5,
-.h6,
-h1,
-h2,
-h3,
-h4,
-h5,
-h6 {
-  font-family: "DMSans-Bold";
-  margin: 0;
-  line-height: 150%;
-}
-
-h1 {
-  font-size: 4rem;
-}
-
-h2 {
-  font-size: 3rem;
-}
-
-h3 {
-  font-size: 2rem;
-}
-
-h4 {
-  font-size: 1.8rem;
-}
-
-h5 {
-  font-size: 1.3rem;
-}
-
-/* Paragraph Styles */
-p {
-  font-size: 1rem;
-  line-height: 150%;
-  color: var(--color-muted);
-  margin: 0;
-}
-
-/* Input Placeholder Alignment */
-input::placeholder {
-  text-align: start;
-  font-size: 1rem;
-}
-
-/* Link Styles */
-a,
-a:active,
-a:focus,
-a:hover {
-  text-decoration: none;
-}
-
-a:active,
-a:focus,
-a:hover {
-  outline: 0;
-}
-
-/* Responsive Image Styling */
-img {
-  max-width: 100%;
-  height: auto;
-}
-
-/* List Reset */
-ul {
-  list-style: none;
-  margin: 0;
-  padding: 0;
-}
-
-/* Button Styling */
-.btn {
+/* Header & Controls */
+/* hide header below viewport by default, slide up when .visible */
+header {
+  position: fixed;
+  bottom: 0;
+  left: 50%;
+  width: 100%;
+  transform: translate(-50%, 100%);
+  transition: transform .3s;
   display: flex;
   align-items: center;
-  gap: 8px;
-  justify-content: center;
+  justify-content: space-between;
+  padding: 10px 20px;
+  background: var(--color-background);
+  border-radius: 16px 16px 0 0;
+  border: 1px solid var(--color-border);
+  z-index: 1000;
   width: max-content;
-  padding: 8px 20px;
+}
+
+/* when this class is added, header is visible */
+header.visible {
+  transform: translate(-50%, 0);
+
+}
+
+/* the transparent hover strip at bottom */
+#hoverArea {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  height: 80px;
+  /* adjust how tall the sensitive zone is */
+  width: 100%;
+  z-index: 900;
+  /* invisible but still catches hover */
+  background: transparent;
+}
+
+/* MOBILE: always show header, fixed to bottom */
+@media (max-width: 768px) {
+  header {
+    transform: translateY(0) !important;
+    border-radius: 0;
+    width: 100%;
+  }
+
+  #hoverArea {
+    display: none;
+    /* disable hover-trigger on mobile */
+  }
+}
+
+
+.logo img {
+  display: block;
+}
+
+.controls {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  position: relative;
+
+}
+
+.controls button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  background: #e54f29;
+  border: none;
+  border-radius: 50%;
+  color: #fff;
+  font-size: 1.2rem;
+  cursor: pointer;
+  transition: background .2s;
+
+}
+
+
+/* Layout menu dropdown */
+.layout-menu {
+  position: absolute;
+  top: 60px;
+  left: 20px;
+  background: #fff;
+  border: 1px solid #ddd;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+  border-radius: 4px;
+  list-style: none;
+  padding: 5px 0;
+  display: none;
+  min-width: 140px;
+}
+
+.layout-menu.active {
+  display: block;
+}
+
+.layout-menu li {
+  padding: 8px 16px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  transition: background .2s;
+}
+
+.layout-menu li:hover {
+  background: #fbf9f2;
+}
+
+.layout-menu li i {
+  font-size: 1rem;
+  color: #e54f29;
+}
+
+/* Grid Container */
+#grid {
+  display: grid;
+  width: 100vw;
+  height: calc(100vh - 60px);
+  height: 100vh;
+  background: #000;
+}
+
+/* Style for empty slots */
+.empty-frame {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--color-background);
+  border: 2px dashed var(--color-border);
+}
+
+.empty-frame button {
+  background: none;
+  border: none;
+  color: var(--color-secondary);
+  font-size: 2rem;
+  cursor: pointer;
+}
+
+.channel-frame {
+  position: relative;
+  background: #111;
+  overflow: hidden;
+  border: 1px solid #333;
+  resize: both;
+}
+
+.channel-frame.dragging {
+  opacity: 0.5;
+}
+
+.channel-frame video {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.overlay {
+  position: absolute;
+  top: 5px;
+  right: 5px;
+  display: flex;
+  gap: 5px;
+}
+
+.overlay button {
+  padding: 4px 6px;
+  font-size: 0.9rem;
+  background: rgba(0, 0, 0, 0.6);
+  color: #fff;
+  border: none;
+  cursor: pointer;
+}
+
+.focus-mode #grid {
+  display: block;
+}
+
+.focus-frame {
+  width: 100vw;
+  height: calc(100vh - 60px);
+}
+
+.modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.7);
+  display: none;
+  align-items: center;
+  justify-content: center;
+  z-index: 1001;
+}
+
+.modal .content {
+  background: #fff;
+  padding: 20px;
+  max-width: 90%;
+  max-height: 90%;
+  overflow: auto;
+  border-radius: 6px;
+}
+
+.modal.active {
+  display: flex;
+}
+
+
+/* Overlay */
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.6);
+  display: none;
+  align-items: center;
+  justify-content: center;
+  z-index: 1002;
+}
+
+.modal-overlay.active {
+  display: flex;
+}
+
+/* Overlay covers the screen */
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.6);
+  display: none;
+  align-items: center;
+  justify-content: center;
+  z-index: 2000;
+}
+
+.modal-overlay.active {
+  display: flex;
+}
+
+/* Modal box */
+.login-modal {
+  background: var(--color-background);
+  border-radius: 8px;
+  width: 90%;
+  max-width: 360px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Header */
+.login-header {
+  background: var(--color-primary);
+  color: #fff;
+  padding: 16px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.login-header h2 {
+  margin: 0;
+  font-size: 1.25rem;
+}
+
+.login-header .modal-close {
+  background: none;
+  border: none;
+  color: #fff;
+  font-size: 1.5rem;
+  cursor: pointer;
+}
+
+/* Body & Form */
+.login-body {
+  padding: 24px;
+}
+
+#loginForm {
+  display: flex;
+  flex-direction: column;
+}
+
+#loginForm input {
+  width: 100%;
+  padding: 12px;
+  margin-bottom: 16px;
+  border: 1px solid var(--color-border);
+  border-radius: 4px;
   font-size: 1rem;
 }
 
-/* Overlay Styling */
-.overlay {
-  background: rgba(0, 0, 0, 0.6);
-  color: var(--text-color);
+.btn-submit {
+  width: 100%;
+  padding: 12px;
+  background: var(--color-secondary);
+  color: #fff;
+  border: none;
+  border-radius: 4px;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: background .2s;
+}
+
+.btn-submit:hover {
+  background: var(--color-hover);
 }
 
 
-@media (min-width: 768px) {}
+#recordBtn {
+  color: #fff;
+  font-size: 1.2rem;
+  transition: color .2s;
+  background: var(--color-secondary);
+  border: 1px solid var(--color-secondary);
+}
+
+#recordBtn.recording {
+  color: red;
+}
+
+
+/* Make both <video> and <iframe> fill their .channel-frame */
+.channel-frame video,
+.channel-frame .youtube-frame {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  /* crops/zooms to fill without distortion */
+  border: none;
+}
+
+.channel-frame.dragging {
+  opacity: 0.6;
+}
+
+#dragModeBtn.active {
+  color: var(--color-secondary);
+  background-color: #fff;
+  border: 1px solid var(--color-secondary);
+}

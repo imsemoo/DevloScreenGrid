@@ -2,573 +2,82 @@
 <html lang="en">
 
 <head>
+    <!-- Basic Meta Tags -->
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>DevloScreenGrid – Live News Channel Grid Viewer</title>
     <meta name="description"
-        content="DevloScreenGrid lets you watch up to 64 live news channels in customizable split-screen grids, from 1×1 to 8×8, with an intuitive icon-based menu.">
-    <meta name="keywords" content="Live news, multi-channel, video grid, streaming, split-screen, DevloScreenGrid">
+        content="DevloScreenGrid lets you watch up to 64 live news channels simultaneously in customizable split-screen grids, from 1×1 to 8×8, with an intuitive icon-based interface.">
+    <meta name="keywords"
+        content="live news, multi-channel streaming, video grid, split-screen viewer, DevloScreenGrid">
     <meta name="robots" content="index, follow">
     <link rel="canonical" href="https://www.devloscreengrid.com/">
+    <meta name="theme-color" content="#07475d">
 
-    <!-- Open Graph -->
+    <!-- Open Graph / Twitter Cards -->
     <meta property="og:title" content="DevloScreenGrid – Live News Channel Grid Viewer">
-    <meta property="og:description"
-        content="Watch up to 64 live news channels simultaneously in fully customizable grids.">
+    <meta property="og:description" content="Watch up to 64 live news channels in fully customizable grids.">
     <meta property="og:image" content="assets/img/social-preview.png">
     <meta property="og:url" content="https://www.devloscreengrid.com/">
     <meta property="og:type" content="website">
     <meta name="twitter:card" content="summary_large_image">
 
-    <link rel="icon" href="assets/img/favicon.ico">
+    <!-- Structured Data for SEO -->
+    <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "WebSite",
+    "name": "DevloScreenGrid",
+    "url": "https://www.devloscreengrid.com/"
+  }
+  </script>
 
-    <!-- CSS -->
+    <!-- Page Title -->
+    <title>DevloScreenGrid – Live News Channel Grid Viewer</title>
+
+    <!-- Favicon -->
+    <link rel="icon" href="assets/img/favicon.ico" type="image/x-icon">
+
+    <!-- Stylesheets -->
     <link rel="stylesheet" href="assets/css/normalize.css">
-    <link rel="stylesheet" href="assets/css/all.min.css">
-    <link rel="stylesheet" href="assets/css/style.css">
+    <link rel="stylesheet" href="assets/css/all.min.css"> <!-- FontAwesome icons -->
+    <link rel="stylesheet" href="assets/css/style.css"> <!-- Main styles -->
 
-    <!-- html2canvas -->
+    <!-- html2canvas for snapshot feature -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"
         integrity="sha512-BNa5hIh8yQ4gNnP2KpWcA6S1g1m8/1jXLXvYv6vkdOFeVhjg3aeEDYQ/rSWEL6n7f8Xz6fK3qKH8QtZ+Mq8Uvg=="
         crossorigin="anonymous" referrerpolicy="no-referrer"></script>
-
-    <style>
-        :root {
-            /* Primary brand color (deep navy) */
-            --color-primary: #07475d;
-
-            /* Secondary brand color (warm red) */
-            --color-secondary: #e54f29;
-
-            /* Accent color (bright orange) */
-            --color-accent: #faa71e;
-
-            /* Very light background */
-            --color-background: #fbf9f2;
-
-            /* Body text on light backgrounds */
-            --color-text: #222222;
-
-            /* Muted text for subtitles, captions */
-            --color-muted: #6b6b6b;
-
-            /* Light border/shadow for cards and menus */
-            --color-border: #dddddd;
-
-            /* Hover highlight (slightly darker than accent) */
-            --color-hover: #e59517;
-        }
-
-
-        /* Reset margin and padding for all elements */
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
-        /* Font Face Declarations */
-        @font-face {
-            font-family: "DMSans-Regular";
-            src: url(../fonts/en/DMSans-Regular.ttf);
-        }
-
-        @font-face {
-            font-family: "DMSans-Medium";
-            src: url(../fonts/en/DMSans-Medium.ttf);
-        }
-
-
-
-        @font-face {
-            font-family: "DMSans-SemiBold";
-            src: url(../fonts/en/DMSans-SemiBold.ttf);
-        }
-
-        @font-face {
-            font-family: "DMSans-Bold";
-            src: url(../fonts/en/DMSans-Bold.ttf);
-        }
-
-        @font-face {
-            font-family: "DMSans-ExtraBold";
-            src: url(../fonts/en/DMSans-ExtraBold.ttf);
-        }
-
-        /* Global Body Styles */
-        body {
-            line-height: 150%;
-            font-family: "DMSans-Regular";
-            color: var(--color-dark);
-            overflow: hidden;
-
-        }
-
-        /* Header & Controls */
-        /* hide header below viewport by default, slide up when .visible */
-        header {
-            position: fixed;
-            bottom: 0;
-            left: 50%;
-            width: 100%;
-            transform: translate(-50%, 100%);
-            transition: transform .3s;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            padding: 10px 20px;
-            background: var(--color-background);
-            border-radius: 16px 16px 0 0;
-            border: 1px solid var(--color-border);
-            z-index: 1000;
-            width: max-content;
-        }
-
-        /* when this class is added, header is visible */
-        header.visible {
-            transform: translate(-50%, 0);
-
-        }
-
-        /* the transparent hover strip at bottom */
-        #hoverArea {
-            position: fixed;
-            bottom: 0;
-            left: 0;
-            height: 80px;
-            /* adjust how tall the sensitive zone is */
-            width: 100%;
-            z-index: 900;
-            /* invisible but still catches hover */
-            background: transparent;
-        }
-
-        /* MOBILE: always show header, fixed to bottom */
-        @media (max-width: 768px) {
-            header {
-                transform: translateY(0) !important;
-                border-radius: 0;
-                width: 100%;
-            }
-
-            #hoverArea {
-                display: none;
-                /* disable hover-trigger on mobile */
-            }
-        }
-
-
-        .logo img {
-            display: block;
-        }
-
-        .controls {
-            display: flex;
-            align-items: center;
-            gap: 15px;
-            position: relative;
-
-        }
-
-        .controls button {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            width: 40px;
-            height: 40px;
-            background: #e54f29;
-            border: none;
-            border-radius: 50%;
-            color: #fff;
-            font-size: 1.2rem;
-            cursor: pointer;
-            transition: background .2s;
-
-        }
-
-
-        /* Layout menu dropdown */
-        .layout-menu {
-            position: absolute;
-            top: 60px;
-            left: 20px;
-            background: #fff;
-            border: 1px solid #ddd;
-            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
-            border-radius: 4px;
-            list-style: none;
-            padding: 5px 0;
-            display: none;
-            min-width: 140px;
-        }
-
-        .layout-menu.active {
-            display: block;
-        }
-
-        .layout-menu li {
-            padding: 8px 16px;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            transition: background .2s;
-        }
-
-        .layout-menu li:hover {
-            background: #fbf9f2;
-        }
-
-        .layout-menu li i {
-            font-size: 1rem;
-            color: #e54f29;
-        }
-
-        /* Grid Container */
-        #grid {
-            display: grid;
-            width: 100vw;
-            height: calc(100vh - 60px);
-            height: 100vh;
-            background: #000;
-        }
-
-        /* Style for empty slots */
-        .empty-frame {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            background: var(--color-background);
-            border: 2px dashed var(--color-border);
-        }
-
-        .empty-frame button {
-            background: none;
-            border: none;
-            color: var(--color-secondary);
-            font-size: 2rem;
-            cursor: pointer;
-        }
-
-        .channel-frame {
-            position: relative;
-            background: #111;
-            overflow: hidden;
-            border: 1px solid #333;
-            resize: both;
-        }
-
-        .channel-frame.dragging {
-            opacity: 0.5;
-        }
-
-        .channel-frame video {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-        }
-
-        .overlay {
-            position: absolute;
-            top: 5px;
-            right: 5px;
-            display: flex;
-            gap: 5px;
-        }
-
-        .overlay button {
-            padding: 4px 6px;
-            font-size: 0.9rem;
-            background: rgba(0, 0, 0, 0.6);
-            color: #fff;
-            border: none;
-            cursor: pointer;
-        }
-
-        .focus-mode #grid {
-            display: block;
-        }
-
-        .focus-frame {
-            width: 100vw;
-            height: calc(100vh - 60px);
-        }
-
-        .modal {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0, 0, 0, 0.7);
-            display: none;
-            align-items: center;
-            justify-content: center;
-            z-index: 1001;
-        }
-
-        .modal .content {
-            background: #fff;
-            padding: 20px;
-            max-width: 90%;
-            max-height: 90%;
-            overflow: auto;
-            border-radius: 6px;
-        }
-
-        .modal.active {
-            display: flex;
-        }
-
-
-        /* Overlay */
-        .modal-overlay {
-            position: fixed;
-            inset: 0;
-            background: rgba(0, 0, 0, 0.6);
-            display: none;
-            align-items: center;
-            justify-content: center;
-            z-index: 1002;
-        }
-
-        .modal-overlay.active {
-            display: flex;
-        }
-
-        /* Overlay covers the screen */
-        .modal-overlay {
-            position: fixed;
-            inset: 0;
-            background: rgba(0, 0, 0, 0.6);
-            display: none;
-            align-items: center;
-            justify-content: center;
-            z-index: 2000;
-        }
-
-        .modal-overlay.active {
-            display: flex;
-        }
-
-        /* Modal box */
-        .login-modal {
-            background: var(--color-background);
-            border-radius: 8px;
-            width: 90%;
-            max-width: 360px;
-            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
-            overflow: hidden;
-            display: flex;
-            flex-direction: column;
-        }
-
-        /* Header */
-        .login-header {
-            background: var(--color-primary);
-            color: #fff;
-            padding: 16px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        .login-header h2 {
-            margin: 0;
-            font-size: 1.25rem;
-        }
-
-        .login-header .modal-close {
-            background: none;
-            border: none;
-            color: #fff;
-            font-size: 1.5rem;
-            cursor: pointer;
-        }
-
-        /* Body & Form */
-        .login-body {
-            padding: 24px;
-        }
-
-        #loginForm {
-            display: flex;
-            flex-direction: column;
-        }
-
-        #loginForm input {
-            width: 100%;
-            padding: 12px;
-            margin-bottom: 16px;
-            border: 1px solid var(--color-border);
-            border-radius: 4px;
-            font-size: 1rem;
-        }
-
-        .btn-submit {
-            width: 100%;
-            padding: 12px;
-            background: var(--color-secondary);
-            color: #fff;
-            border: none;
-            border-radius: 4px;
-            font-size: 1rem;
-            cursor: pointer;
-            transition: background .2s;
-        }
-
-        .btn-submit:hover {
-            background: var(--color-hover);
-        }
-
-
-        #recordBtn {
-            color: #fff;
-            font-size: 1.2rem;
-            transition: color .2s;
-            background: var(--color-secondary);
-            border: 1px solid var(--color-secondary);
-        }
-
-        #recordBtn.recording {
-            color: red;
-        }
-
-
-        /* Make both <video> and <iframe> fill their .channel-frame */
-        .channel-frame video,
-        .channel-frame .youtube-frame {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-            /* crops/zooms to fill without distortion */
-            border: none;
-        }
-
-        .channel-frame.dragging {
-            opacity: 0.6;
-        }
-
-        #dragModeBtn.active {
-            color: var(--color-secondary);
-            background-color: #fff;
-            border: 1px solid var(--color-secondary);
-        }
-
-
-        /* —— Groups Sidebar —— */
-.group-panel {
-  position: fixed;
-  top: 0; left: 0;
-  height: 100vh;
-  width: 250px;
-  background: var(--color-background);
-  border-right: 1px solid var(--color-border);
-  box-shadow: 2px 0 8px rgba(0,0,0,0.1);
-  transform: translateX(-220px);
-  transition: transform .3s ease;
-  display: flex;
-  flex-direction: column;
-  z-index: 1500;
-}
-.group-panel.expanded { transform: translateX(0); }
-.group-panel.collapsed { transform: translateX(-220px); }
-
-/* Header: icon-only */
-.group-header {
-  display: flex;
-  align-items: center;
-  padding: 12px;
-  position: relative;
-}
-.group-header .icon-btn {
-  background: none;
-  border: none;
-  font-size: 1.2rem;
-  cursor: pointer;
-  color: var(--color-secondary);
-}
-.group-header .tooltip {
-  position: absolute;
-  left: 40px; top: 12px;
-  font-size: .85rem;
-  opacity: 0;
-  transition: opacity .2s;
-}
-.group-panel.expanded .tooltip { opacity: 1; }
-
-/* Group List */
-.group-list {
-  flex: 1;
-  overflow-y: auto;
-}
-.group-item {
-  display: flex;
-  align-items: center;
-  padding: 8px;
-  cursor: pointer;
-}
-.group-item.active { background: var(--color-accent); color: #fff; }
-.group-item .icon { width: 24px; text-align: center; }
-.group-item .label {
-  margin-left: 8px;
-  white-space: nowrap;
-  opacity: 0;
-  transition: opacity .2s;
-}
-.group-panel.expanded .label { opacity: 1; }
-
-/* Stream List */
-.stream-list {
-  border-top: 1px solid var(--color-border);
-  padding: 8px;
-  max-height: 40vh;
-  overflow-y: auto;
-}
-.stream-item {
-  display: flex;
-  align-items: center;
-  padding: 6px;
-  cursor: grab;
-}
-.stream-item:active { cursor: grabbing; }
-.stream-item .icon { width: 20px; text-align: center; }
-.stream-item .label {
-  margin-left: 6px;
-  font-size: .9rem;
-  flex: 1;
-}
-
-    </style>
 </head>
 
 <body>
+    <!-- Main Header: logo and control buttons -->
     <header>
         <div class="logo">
-            <a href="/">
+            <a href="/" aria-label="DevloScreenGrid Home">
                 <img src="assets/img/logo.svg" alt="DevloScreenGrid Logo" width="120">
             </a>
         </div>
         <div class="controls">
-            <!-- Groups toggle -->
-            <button id="groupsBtn" aria-label="Groups (G)">
+            <!-- Groups Drawer Toggle -->
+            <button id="openGroupsDrawer" class="icon-btn floating-btn" aria-label="Open Groups Drawer (G)">
                 <i class="fas fa-layer-group"></i>
             </button>
-
+            <!-- Drag Mode Toggle -->
             <button id="dragModeBtn" aria-label="Toggle Drag Mode">
                 <i class="fas fa-arrows-alt"></i>
             </button>
-
-            <!-- Bulk control buttons: Play All / Pause All / Mute All -->
-
-            <button id="playPauseAllBtn" aria-label="Play/Pause All">
+            <!-- Bulk Play/Pause All -->
+            <button id="playPauseAllBtn" aria-label="Play or Pause All Channels">
                 <i class="fas fa-pause"></i>
             </button>
-            <button id="muteAllBtn" aria-label="Mute/Unmute All"><i class="fas fa-volume-mute"></i></button>
+            <!-- Bulk Mute/Unmute All -->
+            <button id="muteAllBtn" aria-label="Mute or Unmute All Channels">
+                <i class="fas fa-volume-mute"></i>
+            </button>
+            <!-- Layout Selection -->
             <button id="layoutBtn" aria-label="Choose Grid Layout">
                 <i class="fas fa-th-large"></i>
             </button>
-            <ul id="layoutMenu" class="layout-menu">
+            <ul id="layoutMenu" class="layout-menu" aria-label="Grid Layout Options">
                 <li data-value="1"><i class="fas fa-stop"></i> 1×1</li>
                 <li data-value="4"><i class="fas fa-th"></i> 2×2</li>
                 <li data-value="6"><i class="fas fa-th-list"></i> 3×2</li>
@@ -576,50 +85,26 @@
                 <li data-value="16"><i class="fas fa-border-all"></i> 4×4</li>
                 <li data-value="64"><i class="fas fa-th"></i> 8×8</li>
             </ul>
-            <button id="favoritesBtn" aria-label="Favorites">
-                <i class="fas fa-star"></i>
-            </button>
-            <button id="shareBtn" aria-label="Share View">
-                <i class="fas fa-share-alt"></i>
-            </button>
-            <button id="recordBtn" aria-label="Record"><i class="fas fa-circle"></i></button>
-
-            <!-- Icon buttons for auth -->
-            <button id="loginBtn" class="auth-btn" aria-label="Login">
+            <!-- Favorites, Share, Record, Login -->
+            <button id="favoritesBtn" aria-label="View Favorites"><i class="fas fa-star"></i></button>
+            <button id="shareBtn" aria-label="Share Current View"><i class="fas fa-share-alt"></i></button>
+            <button id="recordBtn" aria-label="Start or Stop Recording"><i class="fas fa-circle"></i></button>
+            <button id="loginBtn" class="auth-btn" aria-label="Log In to Your Account">
                 <i class="fas fa-sign-in-alt"></i>
             </button>
-
-
         </div>
     </header>
-<!-- Groups Sidebar -->
-<div id="groupPanel" class="group-panel collapsed">
-    <header class="group-header">
-      <button id="addGroupBtn" class="icon-btn" aria-label="New Group (N)">
-        <i class="fas fa-plus"></i>
-      </button>
-      <span class="tooltip">New Group (N)</span>
-    </header>
-    <nav id="groupList" class="group-list">
-      <!-- dynamically populated -->
-    </nav>
-    <section id="streamList" class="stream-list">
-      <!-- streams for selected group -->
-    </section>
-  </div>
-  
 
-    <div id="hoverArea"></div>
+    <!-- Invisible hover area to reveal header on desktop -->
+    <div id="hoverArea" aria-hidden="true"></div>
 
-
-    <div id="grid"></div>
-
-
+    <!-- Main Video Grid Container -->
+    <main id="grid" role="region" aria-label="Video Channel Grid"></main>
 
     <!-- Schedule Recording Modal -->
-    <div id="scheduleModal" class="modal">
+    <div id="scheduleModal" class="modal" role="dialog" aria-modal="true" aria-labelledby="scheduleTitle">
         <div class="content">
-            <h2>Schedule Recording</h2>
+            <h2 id="scheduleTitle">Schedule Recording</h2>
             <form id="scheduleForm">
                 <input type="hidden" id="scheduleChannelId">
                 <div>
@@ -635,33 +120,32 @@
             </form>
         </div>
     </div>
+
     <!-- Login Modal -->
-    <div id="loginModal" class="modal-overlay" aria-hidden="true">
+    <div id="loginModal" class="modal-overlay" aria-hidden="true" role="dialog" aria-labelledby="loginTitle">
         <div class="login-modal">
             <header class="login-header">
-                <h2>Log In</h2>
-                <button class="modal-close" aria-label="Close">&times;</button>
+                <h2 id="loginTitle">Log In</h2>
+                <button class="modal-close" aria-label="Close Log In">&times;</button>
             </header>
             <div class="login-body">
                 <form id="loginForm">
-                    <input type="email" placeholder="Email" required>
-                    <input type="password" placeholder="Password" required>
+                    <input type="email" name="email" placeholder="Email" required>
+                    <input type="password" name="password" placeholder="Password" required>
                     <button type="submit" class="btn-submit">Log In</button>
                 </form>
             </div>
         </div>
     </div>
 
+    <!-- Third-Party Libraries -->
+    <script src="assets/js/jquery-3.7.1.min.js"></script> <!-- Used for UI interactions -->
+    <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script> <!-- HLS streaming support -->
+    <script src="https://www.youtube.com/iframe_api"></script> <!-- YouTube Iframe API -->
 
-    <script src="assets/js/jquery-3.7.1.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
-    <!-- load html2canvas first -->
-    <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
-    <script src="https://www.youtube.com/iframe_api"></script>
-
-
-    <script src="assets/js/script.js"></script>
-
+    <!-- Main JavaScript Files -->
+    <script src="assets/js/main.js"></script> <!-- Core grid initialization and HLS player -->
+    <script src="assets/js/script.js"></script> <!-- Additional UI logic and event handling -->
 </body>
 
 </html>
