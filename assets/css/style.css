@@ -74,6 +74,7 @@ body {
   font-family: "DMSans-Regular";
   color: var(--color-dark);
   overflow: hidden;
+  background-color: #000;
 
 }
 
@@ -210,10 +211,9 @@ header.visible {
 #grid {
   display: grid;
   width: 100vw;
-  height: calc(100vh - 60px);
+  height: calc(100vh - 70px);
   grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
 
-  height: 100vh;
   background: #000;
 }
 

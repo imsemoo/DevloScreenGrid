@@ -1,81 +1,27 @@
 // assets/js/groups.js
 (function () {
 
-  // ---------------------------------------
-  // 1. Channel Definitions (YouTube only)
-  // ---------------------------------------
   const channels = [
-    // 1) Al Arabiya (replaces old Channel 1)
-    {
-      id: 1,
-      type: 'youtube',
-      name: 'Al Arabiya',
-      src: 'live_stream?channel=UCahpxixMCwoANAftn6IxkTg',
-      lang: 'ar'
-    }, // :contentReference[oaicite:0]{index=0}
-
-    // 2) Al Jazeera English (unchanged)
-    {
-      id: 2,
-      type: 'youtube',
-      name: 'Al Jazeera English',
-      src: 'live_stream?channel=UCNye-wNBqNL5ZzHSJj3l8Bg',
-      lang: 'en'
-    },
-
-    // 3) BBC News Arabic (replaces old BBC News)
-    {
-      id: 3,
-      type: 'youtube',
-      name: 'BBC News Arabic',
-      src: 'live_stream?channel=UCelk6aHijZq-GJBBB9YpReA',
-      lang: 'ar'
-    }, // :contentReference[oaicite:1]{index=1}
-
-    // 4) CNBC (replaces old CNN)
-    {
-      id: 4,
-      type: 'youtube',
-      name: 'CNBC',
-      src: 'live_stream?channel=UCvJJ_dzjViJCoLf5uKUTwoA',
-      lang: 'en'
-    }, // :contentReference[oaicite:2]{index=2}
-
-    // 6) TRT World (replaces old Sky News)
-    {
-      id: 6,
-      type: 'youtube',
-      name: 'TRT World',
-      src: 'live_stream?channel=UC7fWeaHhqgM4Ry-RMpM2YYw',
-      lang: 'en'
-    }, // :contentReference[oaicite:4]{index=4}
-
-    // 7) Al Hadath (unchanged)
-    {
-      id: 7,
-      type: 'youtube',
-      name: 'Al Hadath',
-      src: 'live_stream?channel=UCrj5BGAhtWxDfqbza9T9hqA',
-      lang: 'ar'
-    }, // :contentReference[oaicite:5]{index=5}
-
-    // 8) Sky News Arabia (unchanged)
-    {
-      id: 8,
-      type: 'youtube',
-      name: 'Sky News Arabia',
-      src: 'live_stream?channel=UCIJXOvggjKtCagMfxvcCzAA',
-      lang: 'ar'
-    }, // :contentReference[oaicite:6]{index=6}
-
-    // 9) France 24 English (unchanged)
-    {
-      id: 9,
-      type: 'youtube',
-      name: 'France 24 English',
-      src: 'live_stream?channel=UCQfwfsi5VrQ8yKZ-UWmAEFg',
-      lang: 'en'
-    } // :contentReference[oaicite:7]{index=7}
+    { id: 1, type: 'youtube', name: 'AlJazeera', src: 'bNyUyrR0PHo', lang: 'ar' },
+    { id: 2, type: 'youtube', name: 'AlJazeeraMubasher', src: 'Lwbp9WfLslc', lang: 'ar' },
+    { id: 3, type: 'youtube', name: 'AlArabiya', src: 'n7eQejkXbnM', lang: 'ar' },
+    { id: 4, type: 'youtube', name: 'AlHadath', src: 'zq6ohxTDNZY', lang: 'ar' },
+    { id: 5, type: 'youtube', name: 'Alaraby', src: 'e2RgSa1Wt5o', lang: 'ar' },
+    { id: 6, type: 'youtube', name: 'AlMayadeen', src: 'TwDlQ71TNmk', lang: 'ar' },
+    { id: 7, type: 'youtube', name: 'SkyNewsArabia', src: 'oY976rzO-EI', lang: 'ar' },
+    { id: 8, type: 'youtube', name: 'TRTarabic', src: '01uyBBN5TVc', lang: 'ar' },
+    { id: 9, type: 'youtube', name: 'AlHiwar', src: 'qZDWVJ7LlQM', lang: 'ar' },
+    { id: 10, type: 'youtube', name: 'FRANCE 24', src: 'VuYzy8IuT0Y', lang: 'ar' },
+    { id: 11, type: 'youtube', name: 'BBCarabic', src: 'hC9fwQXSUCk', lang: 'ar' },
+    { id: 12, type: 'youtube', name: 'Alhurra', src: 'AiUw_MeP-xo', lang: 'ar' },
+    { id: 13, type: 'youtube', name: 'Alghad', src: 'BpcESs5YRDo', lang: 'ar' },
+    { id: 14, type: 'youtube', name: 'DW', src: 'AGkp2AL8e7o', lang: 'ar' },
+    { id: 15, type: 'youtube', name: 'AlikhbariahSyria', src: 'BxlYdwIqZ5w', lang: 'ar' },
+    { id: 16, type: 'youtube', name: 'SyriaTV', src: 'OLWU0rKOQ6o', lang: 'ar' },
+    { id: 17, type: 'youtube', name: 'RoyaNews', src: 'k8NkcKVCk5w', lang: 'ar' },
+    { id: 18, type: 'website', name: 'Almanar', src: 'https://www.almanar.com.lb/live/', lang: 'ar' },
+    { id: 19, type: 'website', name: 'Palestine', src: 'https://www.pbc.ps/live/', lang: 'ar' },
+    { id: 20, type: 'website', name: 'Alalam', src: 'https://www.alalam.ir/live', lang: 'ar' }
   ];
 
   // ---------------------------------------
@@ -321,7 +267,7 @@
     });
   });
 
-  
+
 
   // ---------------------------------------
   // 13. Drag & Drop
