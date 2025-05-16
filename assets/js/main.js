@@ -7,7 +7,7 @@
     { id: 3, type: 'youtube', name: 'AlArabiya', src: 'n7eQejkXbnM', lang: 'ar' },
     { id: 4, type: 'youtube', name: 'AlHadath', src: 'zq6ohxTDNZY', lang: 'ar' },
     { id: 5, type: 'youtube', name: 'Alaraby', src: 'e2RgSa1Wt5o', lang: 'ar' },
-    { id: 6, type: 'youtube', name: 'AlMayadeen', src: 'TwDlQ71TNmk', lang: 'ar' },
+    { id: 6, type: 'youtube', name: 'AlMayadeen', src: 'PB_BEFGDJ-w', lang: 'ar' },
     { id: 7, type: 'youtube', name: 'SkyNewsArabia', src: 'oY976rzO-EI', lang: 'ar' },
     { id: 8, type: 'youtube', name: 'TRTarabic', src: '01uyBBN5TVc', lang: 'ar' },
     { id: 9, type: 'youtube', name: 'AlHiwar', src: 'qZDWVJ7LlQM', lang: 'ar' },
